@@ -1,0 +1,41 @@
+version: '3.8'
+name: chinook
+services:
+  #----------------------------------------------------------------------------
+  # SQL Server Container
+  # https://hub.docker.com/_/microsoft-mssql-server
+  #
+  # docker-compose -f docker-compose.mssql.yml up -d
+  # Commands:
+  # docker inspect --format "{{json .State.Health }}" chinook-mssql-1 | jq
+  # docker inspect --format "{{json .State.Health }}" chinook-mssql-1 | jq  
+  # docker exec chinook-mssql-1 /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P '${DB_PASSWORD}' -q "select 1" -b -C -o /dev/null
+  #----------------------------------------------------------------------------
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    #image: mcr.microsoft.com/mssql-tools:latest
+    platform: linux/amd64
+    hostname: scratch-mssql
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: ${DB_PASSWORD}
+      MSSQL_PID: Developer
+      TZ: Etc/UTC # https://learn.microsoft.com/en-us/sql/linux/sql-server-linux-configure-time-zone
+    healthcheck:
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P '${DB_PASSWORD}' -Q "select 1" -b -C -o /dev/null
+      interval: 10s
+      timeout: 1s
+      retries: 3
+      start_period: 30s      
+    ports:
+      - "1433:1433"
+  mssql-tools:
+    # https://hub.docker.com/_/microsoft-mssql-tools
+    image: mcr.microsoft.com/mssql-tools:latest
+    restart: no
+    command: "/opt/mssql-tools/bin/sqlcmd -S scratch-mssql -l 5 -U sa -P '${DB_PASSWORD}' -d master -i /docker-entrypoint-initdb.d/create_database.sql"
+    depends_on:
+      mssql:
+        condition: service_healthy
+    volumes:
+      - ./ChinookDatabase/DataSources/Chinook_SqlServer.sql:/docker-entrypoint-initdb.d/create_database.sql
