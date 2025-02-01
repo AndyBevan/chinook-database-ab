@@ -1,3 +1,19 @@
+
+## Chinook Database Fork
+
+Forked the Chinook repo and added a couple of additional docker-compose files that make it easier to run either MS Sql OR Postgres
+
+For the following examples - you will need to create a .env file in the root with the property `DB_PASSWORD=` set. (The repo has a .env.template file you can rename)
+
+MS Sql:             `docker-compose -f docker-compose.mssql.yml up -d`
+
+Postgres:           `docker-compose -f docker-compose.postgres.yml up -d`
+
+MS Sql + Postgres   `docker-compose -f docker-compose.mssql.yml -f docker-compose.postgres.yml up -d`
+
+
+
+------------ Below here is taken from the original repo this is forked from - https://github.com/lerocha/chinook-database ------------
 ## Chinook Database
 
 Chinook is a sample database available for SQL Server, Oracle, MySQL, etc. It can be created by running a single SQL script. Chinook database is an alternative to the Northwind database, being ideal for demos and testing ORM tools targeting single and multiple database servers.
