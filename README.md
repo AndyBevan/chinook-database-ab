@@ -9,6 +9,8 @@ MS Sql:             `docker-compose -f docker-compose.mssql.yml up -d`
 
 Postgres:           `docker-compose -f docker-compose.postgres.yml up -d`
 
+MySQL:              `docker-compose -f docker-compose.mysql.yml up -d`
+
 MS Sql + Postgres   `docker-compose -f docker-compose.mssql.yml -f docker-compose.postgres.yml up -d`
 
 
